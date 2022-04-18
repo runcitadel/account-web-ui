@@ -103,7 +103,7 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
   newUrl.value = data[0].userOnionUrl;
   newAddress.value = data[0].address;
   let words;
-  if (process.browser) {
+  if (!process || process.browser) {
     const encoder = new TextEncoder();
     words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
   } else {
