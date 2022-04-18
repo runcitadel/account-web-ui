@@ -112,7 +112,7 @@ async function saveData () {
 
   const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value);
 
-  if (data) {
+  if (data && data.length > 0) {
     alert('This address is already in use');
     loading.value = false;
     return;
