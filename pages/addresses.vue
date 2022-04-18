@@ -107,7 +107,7 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
 async function saveData () {
   loading.value = true;
 
-  const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value);
+  const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value.split('@')[0].toLowerCase());
 
   if (data && data.length > 0) {
     alert('This address is already in use');
@@ -117,13 +117,13 @@ async function saveData () {
 
   const { error } = await client.from<Addresses>('LightningAddresses').update({
     ...(newUrl.value ? { userOnionUrl: newUrl.value } : {}),
-    address: newAddress.value.split('@')[0]
+    address: newAddress.value.split('@')[0].toLowerCase()
   }).match({ user_id: user.value.id });
   if (error) {
     const { error } = await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
       ...(newUrl.value ? { userOnionUrl: newUrl.value } : {}),
-      address: newAddress.value.split('@')[0]
+      address: newAddress.value.split('@')[0].toLowerCase()
     });
     // eslint-disable-next-line no-console
     console.error(error);
