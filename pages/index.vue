@@ -28,14 +28,14 @@
         variant="black"
         @click="auth.signIn({ provider: 'twitter' })"
       />
-      <UButton
+      <!--<UButton
         class="mt-3"
         icon="eva:email-outline"
         block
         label="Email"
         variant="black"
         @click="auth.signIn({ provider: 'twitter' })"
-      />
+      />-->
       <UButton
         class="mt-3"
         icon="bi:lightning-charge-fill"
@@ -74,7 +74,7 @@ async function webLnLogin () {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        signature: signed.signature,
+        signature: signed.signature
       })
     });
     const finalResult = await finalData.json();
