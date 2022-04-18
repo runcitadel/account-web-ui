@@ -76,9 +76,9 @@ const newUrl = ref('');
 const userLnurl = ref('');
 const userTippingPage = ref('');
 
-watchEffect(() => {
+watch(newAddress, () => {
   let words;
-  if (process.browser) {
+  if (!process || process.browser) {
     const encoder = new TextEncoder();
     words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
   } else {
