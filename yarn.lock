@@ -1000,6 +1000,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/chrome@npm:^0.0.74":
+  version: 0.0.74
+  resolution: "@types/chrome@npm:0.0.74"
+  dependencies:
+    "@types/filesystem": "*"
+  checksum: 3c6659b9712200d7f7692b41250ae1581945ad9034ddb5875944ede59125aaaef918049934d534b0706a2632d3e79861e8861ba1f49a0397a2805b373b2a1232
+  languageName: node
+  linkType: hard
+
 "@types/estree@npm:*":
   version: 0.0.51
   resolution: "@types/estree@npm:0.0.51"
@@ -1011,6 +1020,22 @@ __metadata:
   version: 0.0.39
   resolution: "@types/estree@npm:0.0.39"
   checksum: 412fb5b9868f2c418126451821833414189b75cc6bf84361156feed733e3d92ec220b9d74a89e52722e03d5e241b2932732711b7497374a404fad49087adc248
+  languageName: node
+  linkType: hard
+
+"@types/filesystem@npm:*":
+  version: 0.0.32
+  resolution: "@types/filesystem@npm:0.0.32"
+  dependencies:
+    "@types/filewriter": "*"
+  checksum: 4b9079d200a3b241722b90e1c5806c4b32c4dac87d42a1c7ef76a2c0dafdbe7d5f1a379b873ad5de73622b44de6599e1522908f67b938d54e785bd1c36e302a0
+  languageName: node
+  linkType: hard
+
+"@types/filewriter@npm:*":
+  version: 0.0.29
+  resolution: "@types/filewriter@npm:0.0.29"
+  checksum: 0c58aa875c2c245be7dbc42b20212f3203e13d11ec013a4a5cd0febf0e8b87214be5882c05ff9d7bdf0398f145a4fdbc24b7e6cf7b094e134a3b4c7a0598502f
   languageName: node
   linkType: hard
 
@@ -1845,6 +1870,13 @@ __metadata:
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
   checksum: 669632eb3745404c2f822a18fc3a0122d2f9a7a13f7fb8b5823ee19d1d2ff9ee5b52c53367176ea4ad093c332fd5ab4bd0ebae5a8e27917a4105a4cfc86b1005
+  languageName: node
+  linkType: hard
+
+"bech32@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "bech32@npm:2.0.0"
+  checksum: fa15acb270b59aa496734a01f9155677b478987b773bf701f465858bf1606c6a970085babd43d71ce61895f1baa594cb41a2cd1394bd2c6698f03cc2d811300e
   languageName: node
   linkType: hard
 
@@ -7711,9 +7743,11 @@ __metadata:
     "@nuxtjs/color-mode": ^3.0.2
     "@nuxtjs/eslint-config-typescript": ^9.0.0
     "@nuxtjs/supabase": ^0.1.8
+    bech32: ^2.0.0
     eslint: ^8.13.0
     nuxt3: latest
     typescript: ^4.6.3
+    webln: ^0.3.0
   languageName: unknown
   linkType: soft
 
@@ -9011,6 +9045,15 @@ __metadata:
   version: 3.0.1
   resolution: "webidl-conversions@npm:3.0.1"
   checksum: c92a0a6ab95314bde9c32e1d0a6dfac83b578f8fa5f21e675bc2706ed6981bc26b7eb7e6a1fab158e5ce4adf9caa4a0aee49a52505d4d13c7be545f15021b17c
+  languageName: node
+  linkType: hard
+
+"webln@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "webln@npm:0.3.0"
+  dependencies:
+    "@types/chrome": ^0.0.74
+  checksum: 9efb4220576882e44f108dd6ace935a9c5f946c369ad601082f5b7c852407b6ab806911ccc88ec945410d11fdbeb7bdc6e30bd8d02690ecc724b5e9542f02f8d
   languageName: node
   linkType: hard
 

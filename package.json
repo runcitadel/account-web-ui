@@ -19,5 +19,9 @@
     "nuxt3": "latest",
     "typescript": "^4.6.3"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.0",
+  "dependencies": {
+    "bech32": "^2.0.0",
+    "webln": "^0.3.0"
+  }
 }

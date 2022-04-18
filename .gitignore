@@ -11,3 +11,4 @@ nuxt.d.ts
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+.vercel_build_output
