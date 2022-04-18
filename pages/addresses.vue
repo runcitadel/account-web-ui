@@ -106,14 +106,6 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
 
 async function saveData () {
   loading.value = true;
-  if (!newUrl.value || newUrl.value.trim().length === 0) {
-    newUrl.value = addressData.value.userOnionUrl;
-    if (newUrl.value.trim().length === 0) {
-      alert('Please enter your LnMe onion URL');
-      loading.value = false;
-      return;
-    }
-  }
 
   const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value);
 
@@ -124,13 +116,13 @@ async function saveData () {
   }
 
   const { error } = await client.from<Addresses>('LightningAddresses').update({
-    userOnionUrl: newUrl.value,
+    ...(newUrl.value ? { userOnionUrl: newUrl.value } : {}),
     address: newAddress.value.split('@')[0]
   }).match({ user_id: user.value.id });
   if (error) {
     const { error } = await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
-      userOnionUrl: '',
+      ...(newUrl.value ? { userOnionUrl: newUrl.value } : {}),
       address: newAddress.value.split('@')[0]
     });
     // eslint-disable-next-line no-console
