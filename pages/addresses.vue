@@ -105,10 +105,15 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
 });
 
 async function saveData () {
-  if (newUrl.value.trim().length === 0) {
-    return;
-  }
   loading.value = true;
+  if (newUrl.value.trim().length === 0) {
+    newUrl.value = addressData.userOnionUrl;
+    if (newUrl.value.trim().length === 0) {
+      alert('Please enter your LnMe onion URL');
+      loading.value = false;
+      return;
+    }
+  }
 
   const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value);
 
