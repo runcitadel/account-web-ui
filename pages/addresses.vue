@@ -76,6 +76,18 @@ const newUrl = ref('');
 const userLnurl = ref('');
 const userTippingPage = ref('');
 
+watchEffect(() => {
+  let words;
+  if (process.browser) {
+    const encoder = new TextEncoder();
+    words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
+  } else {
+    words = bech32.toWords(Buffer.from(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`, 'utf-8'));
+  }
+  userLnurl.value = bech32.encode('lnurl', words, 512);
+  userTippingPage.value = `https://sats4.me/${newAddress.value.split('@')[0]}`;
+});
+
 const { data: addressData } = await useAsyncData('addressData', async () => {
   // eslint-disable-next-line prefer-const
   let { data, error } = await client.from<Addresses>('LightningAddresses').select('address, userOnionUrl').eq('user_id', user.value.id);
@@ -107,6 +119,14 @@ async function saveData () {
     return;
   }
   loading.value = true;
+
+  const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value);
+
+  if (data) {
+    alert('This address is already in use');
+    loading.value = false;
+    return;
+  }
 
   const { error } = await client.from<Addresses>('LightningAddresses').update({
     userOnionUrl: newUrl.value,
