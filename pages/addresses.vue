@@ -77,13 +77,8 @@ const userLnurl = ref('');
 const userTippingPage = ref('');
 
 watch(newAddress, () => {
-  let words;
-  if (!process || process.browser) {
-    const encoder = new TextEncoder();
-    words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
-  } else {
-    words = bech32.toWords(Buffer.from(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`, 'utf-8'));
-  }
+  const encoder = new TextEncoder();
+  const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
   userLnurl.value = bech32.encode('lnurl', words, 512);
   userTippingPage.value = `https://sats4.me/${newAddress.value.split('@')[0]}`;
 });
@@ -102,13 +97,8 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
   }
   newUrl.value = data[0].userOnionUrl;
   newAddress.value = data[0].address;
-  let words;
-  if (!process || process.browser) {
-    const encoder = new TextEncoder();
-    words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
-  } else {
-    words = bech32.toWords(Buffer.from(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`, 'utf-8'));
-  }
+  const encoder = new TextEncoder();
+  const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
   userLnurl.value = bech32.encode('lnurl', words, 512);
   userTippingPage.value = `https://sats4.me/${newAddress.value.split('@')[0]}`;
   return data;
