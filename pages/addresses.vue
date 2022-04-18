@@ -106,7 +106,7 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
 
 async function saveData () {
   loading.value = true;
-  if (newUrl.value.trim().length === 0) {
+  if (!newUrl.value || newUrl.value.trim().length === 0) {
     newUrl.value = addressData.value.userOnionUrl;
     if (newUrl.value.trim().length === 0) {
       alert('Please enter your LnMe onion URL');
