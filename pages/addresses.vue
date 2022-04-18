@@ -46,7 +46,7 @@
       </h3>
       <p>
         <span class="font-bold u-text-white">Lightning Address: </span>
-        <span class="u-text-white">{{ newAddress }}@sats4.me</span>
+        <span class="u-text-white">{{ newAddress }}</span>
       </p>
       <p>
         <span class="font-bold u-text-white">LNURL: </span>
@@ -96,7 +96,7 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
     data = (await client.from<Addresses>('LightningAddresses').select('address, userOnionUrl').eq('user_id', user.value.id)).data;
   }
   newUrl.value = data[0].userOnionUrl;
-  newAddress.value = data[0].address;
+  newAddress.value = data[0].address + '@sats4.me';
   const encoder = new TextEncoder();
   const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
   userLnurl.value = bech32.encode('lnurl', words, 512);
@@ -107,7 +107,7 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
 async function saveData () {
   loading.value = true;
   if (newUrl.value.trim().length === 0) {
-    newUrl.value = addressData.userOnionUrl;
+    newUrl.value = addressData.value.userOnionUrl;
     if (newUrl.value.trim().length === 0) {
       alert('Please enter your LnMe onion URL');
       loading.value = false;
