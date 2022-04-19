@@ -18,6 +18,9 @@
   },
   "packageManager": "yarn@3.2.0",
   "dependencies": {
+    "@sentry/browser": "^6.19.6",
+    "@sentry/tracing": "^6.19.6",
+    "@sentry/vue": "^6.19.6",
     "bech32": "^2.0.0",
     "webln": "^0.3.0"
   }

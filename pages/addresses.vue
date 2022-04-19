@@ -75,6 +75,11 @@ const newAddress = ref('');
 const newUrl = ref('');
 const userLnurl = ref('');
 const userTippingPage = ref('');
+const { $sentrySetUser } = useNuxtApp();
+
+const setUser = () => {
+  $sentrySetUser(user.value);
+};
 
 watch(newAddress, () => {
   const encoder = new TextEncoder();
@@ -115,18 +120,19 @@ async function saveData () {
     return;
   }
 
+  const newOnionArrayUrl = newUrl.value ? newUrl.value.replace('http://', '').replace('https://', '').split('@') : [false];
+  const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
   const { error } = await client.from<Addresses>('LightningAddresses').update({
-    ...(newUrl.value ? { userOnionUrl: newUrl.value } : {}),
+    ...(newOnionUrl ? { userOnionUrl: newOnionUrl } : {}),
     address: newAddress.value.split('@')[0].toLowerCase()
   }).match({ user_id: user.value.id });
   if (error) {
     const { error } = await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
-      ...(newUrl.value ? { userOnionUrl: newUrl.value.replace("http://", "").replace("https://", "") } : {}),
+      ...(newOnionUrl ? { userOnionUrl: newOnionUrl } : {}),
       address: newAddress.value.split('@')[0].toLowerCase()
     });
-    // eslint-disable-next-line no-console
-    console.error(error);
+    throw new Error(error);
   }
   newAddress.value = newAddress.value.split('@')[0] + '@sats4.me';
   const encoder = new TextEncoder();

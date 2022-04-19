@@ -79,8 +79,9 @@ async function webLnLogin () {
     });
     const finalResult = await finalData.json();
     window.location.href = finalResult.link;
-  } catch {
+  } catch (error) {
     alert('Login failed!');
+    throw error;
   }
 }
 </script>

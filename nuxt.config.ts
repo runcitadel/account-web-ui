@@ -17,5 +17,9 @@ export default defineNuxtConfig({
     colors: {
       primary: 'green'
     }
+  },
+  publicRuntimeConfig: {
+    ENV: process.env.ENV,
+    SENTRY_DSN: 'https://0d30323fd78b4f77bf673efccc33449a@o574168.ingest.sentry.io/6346359'
   }
 });
