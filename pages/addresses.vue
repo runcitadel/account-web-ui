@@ -122,7 +122,7 @@ async function saveData () {
   if (error) {
     const { error } = await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
-      ...(newUrl.value ? { userOnionUrl: newUrl.value } : {}),
+      ...(newUrl.value ? { userOnionUrl: newUrl.value.replace("http://", "").replace("https://", "") } : {}),
       address: newAddress.value.split('@')[0].toLowerCase()
     });
     // eslint-disable-next-line no-console
