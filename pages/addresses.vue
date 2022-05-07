@@ -112,9 +112,9 @@ const { data: addressData } = await useAsyncData('addressData', async () => {
 async function saveData () {
   loading.value = true;
 
-  const { data } = await client.from<Addresses>('LightningAddresses').select('address').eq('address', newAddress.value.split('@')[0].toLowerCase());
+  const { data } = await client.from<Addresses>('LightningAddresses').select('address, user_id').eq('address', newAddress.value.split('@')[0].toLowerCase());
 
-  if (data && data.length > 0) {
+  if (data && data.length > 0 && data[1].user_id !== user.value.id) {
     alert('This address is already in use');
     loading.value = false;
     return;
