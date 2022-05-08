@@ -22,6 +22,14 @@
       />
       <UButton
         class="mt-3"
+        icon="mdi:gitlab"
+        block
+        label="GitLab"
+        variant="black"
+        @click="auth.signIn({ provider: 'gitlab' })"
+      />
+      <UButton
+        class="mt-3"
         icon="mdi:twitter"
         block
         label="Twitter"
