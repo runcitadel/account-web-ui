@@ -120,7 +120,7 @@ async function saveData () {
     return;
   }
 
-  const newOnionArrayUrl = newUrl.value ? newUrl.value.replace('http://', '').replace('https://', '').split('@') : [false];
+  const newOnionArrayUrl = newUrl.value ? newUrl.value.split('@') : [false];
   const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
   const { error } = await client.from<Addresses>('LightningAddresses').update({
     ...(newOnionUrl ? { userOnionUrl: newOnionUrl } : {}),
