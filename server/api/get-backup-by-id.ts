@@ -25,13 +25,12 @@ export default defineEventHandler(async (event) => {
   console.log(`${filenamify(body.name)}/${filenamify(body.id)}`);
   try {
     download = await backblaze.downloadFileByName({
-      bucketName: process.env.BACKBLAZE_BUCKET_ID,
+      bucketName: process.env.BACKBLAZE_BUCKET_NAME,
       fileName: `${filenamify(body.name)}/${filenamify(body.id)}`,
       responseType: 'arraybuffer'
     });
   } catch (err) {
     console.error(err);
-    console.error(JSON.stringify(err));
     event.res.statusCode = 500;
     return {
       error: 'Internal server error'
