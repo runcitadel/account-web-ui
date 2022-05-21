@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // We keep track of the backups in Supabase and store the actual backups in Backblaze
-  const { data, error } = await supabase.from('Backups').select('backup_id').eq('backup_id', body.name).order('created_at', { ascending: false });
+  const { data, error } = await supabase.from('Backups').select('backup_id').eq('key', body.name).order('created_at', { ascending: false });
   if (error) {
     // eslint-disable-next-line no-console
     console.error(error);
