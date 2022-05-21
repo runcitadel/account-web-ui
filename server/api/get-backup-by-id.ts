@@ -20,6 +20,7 @@ export default defineEventHandler(async (event) => {
     };
   }
 
+  console.log(`${filenamify(body.name)}/${filenamify(body.id)}`);
   const download = await backblaze.downloadFileByName({
     bucketName: process.env.BACKBLAZE_BUCKET_ID,
     fileName: `${filenamify(body.name)}/${filenamify(body.id)}`,
