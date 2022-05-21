@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import Backblaze from 'backblaze-b2';
 import filenamify from 'filenamify';
 
@@ -20,12 +21,22 @@ export default defineEventHandler(async (event) => {
     };
   }
 
+  let download;
   console.log(`${filenamify(body.name)}/${filenamify(body.id)}`);
-  const download = await backblaze.downloadFileByName({
-    bucketName: process.env.BACKBLAZE_BUCKET_ID,
-    fileName: `${filenamify(body.name)}/${filenamify(body.id)}`,
-    responseType: 'arraybuffer'
-  });
+  try {
+    download = await backblaze.downloadFileByName({
+      bucketName: process.env.BACKBLAZE_BUCKET_ID,
+      fileName: `${filenamify(body.name)}/${filenamify(body.id)}`,
+      responseType: 'arraybuffer'
+    });
+  } catch (err) {
+    console.error(err);
+    console.error(JSON.stringify(err));
+    event.res.statusCode = 500;
+    return {
+      error: 'Internal server error'
+    };
+  }
 
   const file = Buffer.from(download.data);
 
