@@ -1,5 +1,6 @@
 import { SupabaseClient } from '@supabase/supabase-js';
 import Backblaze from 'backblaze-b2';
+import filenamify from 'filenamify';
 
 const backblaze = new Backblaze({
   applicationKeyId: process.env.BACKBLAZE_KEY_ID,
@@ -24,6 +25,8 @@ export default defineEventHandler(async (event) => {
   // We keep track of the backups in Supabase and store the actual backups in Backblaze
   const { data, error } = await supabase.from('Backups').select('backup_id').eq('backup_id', body.name).order('created_at', { ascending: false });
   if (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
     event.res.statusCode = 500;
     return {
       error: 'Internal server error'
@@ -39,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
   const download = await backblaze.downloadFileByName({
     bucketName: process.env.BACKBLAZE_BUCKET_ID,
-    fileName: `${body.name}/${data[0].backup_id}`,
+    fileName: `${filenamify(body.name)}/${data[0].backup_id}`,
     responseType: 'arraybuffer'
   });
 

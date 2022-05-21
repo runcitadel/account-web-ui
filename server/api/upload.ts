@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { SupabaseClient } from '@supabase/supabase-js';
 import Backblaze from 'backblaze-b2';
+import filenamify from 'filenamify';
 
 const backblaze = new Backblaze({
   applicationKeyId: process.env.BACKBLAZE_KEY_ID,
@@ -25,10 +26,19 @@ export default defineEventHandler(async (event) => {
 
   // We keep track of the backups in Supabase and store the actual backups in Backblaze
   const backupId = randomUUID();
-  await supabase.from('Backups').insert({
+  const { error } = await supabase.from('Backups').insert({
     key: body?.name,
     backup_id: backupId
   });
+
+  if (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+    event.res.statusCode = 500;
+    return {
+      error: 'Internal server error'
+    };
+  }
 
   const uploadId = await backblaze.getUploadUrl({
     bucketId: process.env.BACKBLAZE_BUCKET_ID
@@ -40,7 +50,7 @@ export default defineEventHandler(async (event) => {
     uploadUrl: uploadId.data.uploadUrl,
     uploadAuthToken: uploadId.data.authorizationToken,
     data: file,
-    fileName: `${body.name}/${backupId}`
+    fileName: `${filenamify(body.name)}/${backupId}`
   });
 
   return {

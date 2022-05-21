@@ -24,6 +24,7 @@
     "@types/backblaze-b2": "^1.5.1",
     "backblaze-b2": "^1.7.0",
     "bech32": "^2.0.0",
+    "filenamify": "^5.1.1",
     "webln": "^0.3.0"
   }
 }
