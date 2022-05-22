@@ -88,17 +88,17 @@ watch(newAddress, () => {
 
 const { data: addressData } = await useAsyncData('addressData', async () => {
   // eslint-disable-next-line prefer-const
-  let { data, error } = await client.from<Addresses>('LightningAddresses').select('address, userOnionUrl').eq('user_id', user.value.id);
+  let { data, error } = await client.from<Addresses>('LightningAddresses').select('address, proxyTarget').eq('user_id', user.value.id);
 
-  if (!data || !data[0] || !data[0].userOnionUrl || error) {
+  if (!data || !data[0] || !data[0].proxyTarget || error) {
     await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
-      userOnionUrl: '',
+      proxyTarget: '',
       address: ''
     });
-    data = (await client.from<Addresses>('LightningAddresses').select('address, userOnionUrl').eq('user_id', user.value.id)).data;
+    data = (await client.from<Addresses>('LightningAddresses').select('address, proxyTarget').eq('user_id', user.value.id)).data;
   }
-  newUrl.value = data[0].userOnionUrl;
+  newUrl.value = data[0].proxyTarget;
   newAddress.value = data[0].address + '@sats4.me';
   const encoder = new TextEncoder();
   const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
@@ -121,13 +121,13 @@ async function saveData () {
   const newOnionArrayUrl = newUrl.value ? newUrl.value.split('@') : [false];
   const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
   const { error } = await client.from<Addresses>('LightningAddresses').update({
-    ...((newOnionUrl ? { userOnionUrl: newOnionUrl } : {}) as { userOnionUrl: string }),
+    ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as { proxyTarget: string }),
     address: newAddress.value.split('@')[0].toLowerCase()
   }).match({ user_id: user.value.id });
   if (error) {
     const { error: err } = await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
-      ...((newOnionUrl ? { userOnionUrl: newOnionUrl } : {}) as { userOnionUrl: string }),
+      ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as { proxyTarget: string }),
       address: newAddress.value.split('@')[0].toLowerCase()
     });
     throw new Error(JSON.stringify(error) + '\n\n' + JSON.stringify(err));

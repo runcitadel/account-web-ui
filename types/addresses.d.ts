@@ -1,6 +1,6 @@
 export interface Addresses {
     id: number
     address: string
-    userOnionUrl: string
+    proxyTarget: string
     user_id: string
 }
