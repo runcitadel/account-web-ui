@@ -75,9 +75,6 @@ const newAddress = ref('');
 const newUrl = ref('');
 const userLnurl = ref('');
 const userTippingPage = ref('');
-const { $sentrySetUser } = useNuxtApp();
-
-$sentrySetUser(user.value);
 
 watch(newAddress, () => {
   const encoder = new TextEncoder();
