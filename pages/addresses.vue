@@ -77,9 +77,7 @@ const userLnurl = ref('');
 const userTippingPage = ref('');
 const { $sentrySetUser } = useNuxtApp();
 
-const setUser = () => {
-  $sentrySetUser(user.value);
-};
+$sentrySetUser(user.value);
 
 watch(newAddress, () => {
   const encoder = new TextEncoder();
@@ -123,16 +121,16 @@ async function saveData () {
   const newOnionArrayUrl = newUrl.value ? newUrl.value.split('@') : [false];
   const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
   const { error } = await client.from<Addresses>('LightningAddresses').update({
-    ...(newOnionUrl ? { userOnionUrl: newOnionUrl } : {}),
+    ...((newOnionUrl ? { userOnionUrl: newOnionUrl } : {}) as { userOnionUrl: string }),
     address: newAddress.value.split('@')[0].toLowerCase()
   }).match({ user_id: user.value.id });
   if (error) {
-    const { error } = await client.from<Addresses>('LightningAddresses').insert({
+    const { error: err } = await client.from<Addresses>('LightningAddresses').insert({
       user_id: user.value.id,
-      ...(newOnionUrl ? { userOnionUrl: newOnionUrl } : {}),
+      ...((newOnionUrl ? { userOnionUrl: newOnionUrl } : {}) as { userOnionUrl: string }),
       address: newAddress.value.split('@')[0].toLowerCase()
     });
-    throw new Error(error);
+    throw new Error(JSON.stringify(error) + '\n\n' + JSON.stringify(err));
   }
   newAddress.value = newAddress.value.split('@')[0] + '@sats4.me';
   const encoder = new TextEncoder();

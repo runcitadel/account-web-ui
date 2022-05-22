@@ -1,6 +1,6 @@
 export interface Addresses {
     id: number
-    addresses: string[]
+    address: string
     userOnionUrl: string
     user_id: string
 }
