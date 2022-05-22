@@ -13,7 +13,7 @@
     "@nuxtjs/eslint-config-typescript": "^9.0.0",
     "@nuxtjs/supabase": "^0.1.8",
     "eslint": "^8.13.0",
-    "nuxt3": "3.0.0-rc.3-27550969.a4a3cff",
+    "nuxt": "3.0.0-rc.3",
     "typescript": "^4.6.3"
   },
   "packageManager": "yarn@3.2.0",
