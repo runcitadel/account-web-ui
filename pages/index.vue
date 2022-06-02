@@ -48,8 +48,9 @@
         class="mt-3"
         icon="bi:lightning-charge-fill"
         block
-        label="Lightning (WebLN)"
-        variant="yellow"
+        label="Lightning (WebLN) - temporarily unavailable"
+        variant="gray"
+        disabled
         @click="webLnLogin()"
       />
     </LoginCard>
