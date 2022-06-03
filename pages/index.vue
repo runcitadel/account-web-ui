@@ -49,10 +49,15 @@
         icon="bi:lightning-charge-fill"
         block
         label="Lightning (WebLN) - temporarily unavailable"
-        variant="gray"
+        variant="yellow"
         disabled
         @click="webLnLogin()"
       />
+      <p>
+        We are currently moving to a new server.
+        While this is in progress, Lightning logins are temporarily unavailable.
+        Check <a class="underline text-blue-600" href="https://status.runcitadel.space">our status page</a> to learn more.
+      </p>
     </LoginCard>
   </div>
 </template>

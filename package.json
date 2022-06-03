@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nuxi dev",
     "build": "nuxi build",
-    "start": "node .output/server/index.mjs",
+    "start": "nuxi start",
     "lint": "eslint --ext .ts,.js,.vue ."
   },
   "devDependencies": {
