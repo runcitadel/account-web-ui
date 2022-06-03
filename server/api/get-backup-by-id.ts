@@ -8,6 +8,11 @@ const backblaze = new Backblaze({
 });
 
 export default defineEventHandler(async (event) => {
+  if (event.req.method !== 'POST') {
+    event.res.statusCode = 405;
+    event.res.setHeader('Allow', 'POST, PUT');
+    return {};
+  }
   await backblaze.authorize();
   const body: {
     name?: string;
