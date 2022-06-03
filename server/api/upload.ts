@@ -11,6 +11,11 @@ const backblaze = new Backblaze({
 const supabase = new SupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_ADMIN_KEY);
 
 export default defineEventHandler(async (event) => {
+  if (event.req.method !== 'POST') {
+    event.res.statusCode = 405;
+    event.res.setHeader('Allow', 'POST, PUT');
+    return {};
+  }
   await backblaze.authorize();
   const body: {
     name?: string;
