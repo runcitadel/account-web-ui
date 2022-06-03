@@ -22,6 +22,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     beforeSend (event, hint) {
       // Check if it is an exception, and if so, log it.
       if (event.exception) {
+        // eslint-disable-next-line no-console
         console.error(`[Exeption handled by Sentry]: (${hint.originalException})`, { event, hint });
       }
       // Continue sending to Sentry
