@@ -31,6 +31,19 @@ export default defineEventHandler(async (event) => {
 
   // We keep track of the backups in Supabase and store the actual backups in Backblaze
   const backupId = randomUUID();
+  const uploadId = await backblaze.getUploadUrl({
+    bucketId: process.env.BACKBLAZE_BUCKET_ID
+  });
+
+  const file = Buffer.from(body.data, 'base64');
+
+  await backblaze.uploadFile({
+    uploadUrl: uploadId.data.uploadUrl,
+    uploadAuthToken: uploadId.data.authorizationToken,
+    data: file,
+    fileName: `${filenamify(body.name)}/${backupId}`
+  });
+
   const { error } = await supabase.from('Backups').insert({
     key: body?.name,
     backup_id: backupId
@@ -44,19 +57,6 @@ export default defineEventHandler(async (event) => {
       error: 'Internal server error'
     };*/
   }
-
-  const uploadId = await backblaze.getUploadUrl({
-    bucketId: process.env.BACKBLAZE_BUCKET_ID
-  });
-
-  const file = Buffer.from(body.data, 'base64');
-
-  await backblaze.uploadFile({
-    uploadUrl: uploadId.data.uploadUrl,
-    uploadAuthToken: uploadId.data.authorizationToken,
-    data: file,
-    fileName: `${filenamify(body.name)}/${backupId}`
-  });
 
   return {
     id: backupId,
