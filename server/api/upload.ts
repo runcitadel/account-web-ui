@@ -40,9 +40,9 @@ export default defineEventHandler(async (event) => {
     // eslint-disable-next-line no-console
     console.error(error);
     event.res.statusCode = 500;
-    return {
+    /*return {
       error: 'Internal server error'
-    };
+    };*/
   }
 
   const uploadId = await backblaze.getUploadUrl({
@@ -59,6 +59,7 @@ export default defineEventHandler(async (event) => {
   });
 
   return {
-    id: backupId
+    id: backupId,
+    ...(error ? { error: "Supabase error, backup ID not in DB" }: {}),
   };
 });
