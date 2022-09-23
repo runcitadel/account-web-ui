@@ -20,6 +20,14 @@ const logout = async () => {
       <h4 class="u-text-white md:block font-bold mx-4">
         sats4me
       </h4>
+      <div class="flex items-center" v-if="user">
+        <ULink class="u-text-white mx-2" to="/addresses">
+          Lightning addresses
+        </ULink>
+        <ULink class="u-text-white mx-2" to="/proxies">
+          Reverse proxy service
+        </ULink>
+      </div>
       <div class="flex items-center">
         <UButton variant="transparent" :icon="colorModeIcon" @click="toggleDark" />
         <UButton v-if="user" class="u-text-white" variant="transparent" @click="logout">

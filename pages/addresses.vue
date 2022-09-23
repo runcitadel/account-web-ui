@@ -1,13 +1,17 @@
 <template>
   <div class="w-full my-[50px]">
-    <h1 class="mb-12 text-6xl font-bold u-text-white">
-      Your Lightning address
-    </h1>
-    <span>No matter what you enter after @, your Lightning address will always be @sats4.me
+    <h1 class="mb-12 text-6xl font-bold u-text-white">Lightning address</h1>
+    <span class="u-text-white mb-2">
+      Domains other than sats4.me are currently not suported by this service,
+      but will be available through the
+      <ULink to="/proxies" class="underline">reverse proxy service</ULink>
+      later.
     </span>
     <form class="gap-2 my-2" @submit.prevent="saveData">
       <div>
-        <label class="u-text-white mb-1" for="newUrl">The address you want</label>
+        <label class="u-text-white mb-1" for="newUrl"
+          >The address you want</label
+        >
         <UInput
           v-model="newAddress"
           :loading="loading"
@@ -22,7 +26,9 @@
         />
       </div>
       <div>
-        <label class="u-text-white mb-1" for="newUrl">Your LnMe onion URL</label>
+        <label class="u-text-white mb-1" for="newUrl"
+          >Your LnMe onion URL</label
+        >
         <UInput
           v-model="newUrl"
           :loading="loading"
@@ -36,104 +42,148 @@
           autocomplete="off"
         />
       </div>
-      <UButton type="submit" variant="white" size="xl" class="w-full">
-        Save
-      </UButton>
+      <UButton type="submit" variant="white" size="xl"> Save </UButton>
     </form>
-    <div>
-      <h3 class="u-text-white">
-        Your addresses
-      </h3>
-      <p>
-        <span class="font-bold u-text-white">Lightning Address: </span>
-        <span class="u-text-white">{{ newAddress }}</span>
-      </p>
-      <p>
-        <span class="font-bold u-text-white">LNURL: </span>
-        <span class="u-text-white">{{ userLnurl }}</span>
-      </p>
-      <p>
-        <span class="font-bold u-text-white">Tipping page: </span>
-        <span class="u-text-white"><a :href="userTippingPage">{{ userTippingPage }}</a></span>
-      </p>
-    </div>
+    <UModal
+      v-model="showModal"
+      class="u-text-black flex items-center justify-center"
+    >
+      <div class="flex items-center justify-center flex-col">
+        <h3 class="mb-6 text-3xl font-bold">Your addresses</h3>
+        <span>Your address is now set up. You can now receive sats here:</span>
+        <span class="font-bold block">Lightning Address: </span>
+        <InputCopy :value="newAddress" class="m-2 w-full ml-0" />
+
+        <span class="font-bold">Tipping page: </span>
+        <InputCopy :value="userTippingPage" class="m-2 w-full ml-0" />
+
+        <span class="font-bold">LNURL: </span>
+        <InputCopy :value="userLnurl" class="m-2 w-full ml-0" />
+        <qrcode
+          :value="userLnurl"
+          :margin="2"
+          class="h-64 w-64"
+          render-as="svg"
+        />
+      </div>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { bech32 } from 'bech32';
-import { Addresses } from '../types/addresses';
+import { bech32 } from "bech32";
+import { Addresses } from "../types/addresses";
+import Qrcode from "qrcode.vue";
 
 definePageMeta({
-  middleware: 'auth'
+  middleware: "auth",
 });
 
 const client = useSupabaseClient();
 const user = useSupabaseUser();
 const loading = ref(null);
-const newAddress = ref('');
-const newUrl = ref('');
-const userLnurl = ref('');
-const userTippingPage = ref('');
+const newAddress = ref("");
+const newUrl = ref("");
+const userLnurl = ref("");
+const userTippingPage = ref("");
+const showModal = ref(false);
 
 watch(newAddress, () => {
   const encoder = new TextEncoder();
-  const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
-  userLnurl.value = bech32.encode('lnurl', words, 512);
-  userTippingPage.value = `https://sats4.me/${newAddress.value.split('@')[0]}`;
+  const words = bech32.toWords(
+    encoder.encode(
+      `https://sats4.me/.well-known/lnurl/${newAddress.value.split("@")[0]}`
+    )
+  );
+  userLnurl.value = bech32.encode("lnurl", words, 512);
+  userTippingPage.value = `https://sats4.me/${newAddress.value.split("@")[0]}`;
 });
 
-const { data: addressData } = await useAsyncData('addressData', async () => {
+const { data: addressData } = await useAsyncData("addressData", async () => {
   // eslint-disable-next-line prefer-const
-  let { data, error } = await client.from<Addresses>('LightningAddresses').select('address, proxyTarget').eq('user_id', user.value.id);
+  let { data, error } = await client
+    .from<Addresses>("LightningAddresses")
+    .select("address, proxyTarget")
+    .eq("user_id", user.value.id);
 
   if (!data || !data[0] || !data[0].proxyTarget || error) {
-    await client.from<Addresses>('LightningAddresses').insert({
+    await client.from<Addresses>("LightningAddresses").insert({
       user_id: user.value.id,
-      proxyTarget: '',
-      address: ''
+      proxyTarget: "",
+      address: "",
     });
-    data = (await client.from<Addresses>('LightningAddresses').select('address, proxyTarget').eq('user_id', user.value.id)).data;
+    data = (
+      await client
+        .from<Addresses>("LightningAddresses")
+        .select("address, proxyTarget")
+        .eq("user_id", user.value.id)
+    ).data;
   }
   newUrl.value = data[0].proxyTarget;
-  newAddress.value = data[0].address + '@sats4.me';
+  newAddress.value = data[0].address + "@sats4.me";
   const encoder = new TextEncoder();
-  const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
-  userLnurl.value = bech32.encode('lnurl', words, 512);
-  userTippingPage.value = `https://sats4.me/${newAddress.value.split('@')[0]}`;
+  const words = bech32.toWords(
+    encoder.encode(
+      `https://sats4.me/.well-known/lnurl/${newAddress.value.split("@")[0]}`
+    )
+  );
+  userLnurl.value = bech32.encode("lnurl", words, 512);
+  userTippingPage.value = `https://sats4.me/${newAddress.value.split("@")[0]}`;
   return data;
 });
 
-async function saveData () {
+async function saveData() {
   loading.value = true;
 
-  const { data } = await client.from<Addresses>('LightningAddresses').select('address, user_id').eq('address', newAddress.value.split('@')[0].toLowerCase());
+  try {
+    const { data } = await client
+      .from<Addresses>("LightningAddresses")
+      .select("address, user_id")
+      .eq("address", newAddress.value.split("@")[0].toLowerCase());
 
-  if (data && data.length > 0 && data[1].user_id !== user.value.id) {
-    alert('This address is already in use');
+    if (data && data.length > 0 && data[0].user_id !== user.value.id) {
+      alert("This address is already in use");
+      loading.value = false;
+      return;
+    }
+
+    const newOnionArrayUrl = newUrl.value ? newUrl.value.split("@") : [false];
+    const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
+    const { error } = await client
+      .from<Addresses>("LightningAddresses")
+      .update({
+        ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as {
+          proxyTarget: string;
+        }),
+        address: newAddress.value.split("@")[0].toLowerCase(),
+      })
+      .match({ user_id: user.value.id });
+    if (error) {
+      const { error: err } = await client
+        .from<Addresses>("LightningAddresses")
+        .insert({
+          user_id: user.value.id,
+          ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as {
+            proxyTarget: string;
+          }),
+          address: newAddress.value.split("@")[0].toLowerCase(),
+        });
+      throw new Error(JSON.stringify(error) + "\n\n" + JSON.stringify(err));
+    }
+    newAddress.value = newAddress.value.split("@")[0] + "@sats4.me";
+    const encoder = new TextEncoder();
+    const words = bech32.toWords(
+      encoder.encode(
+        `https://sats4.me/.well-known/lnurl/${newAddress.value.split("@")[0]}`
+      )
+    );
+    userLnurl.value = bech32.encode("lnurl", words, 512);
+    userTippingPage.value = `https://sats4.me/${
+      newAddress.value.split("@")[0]
+    }`;
+    showModal.value = true;
+  } finally {
     loading.value = false;
-    return;
   }
-
-  const newOnionArrayUrl = newUrl.value ? newUrl.value.split('@') : [false];
-  const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
-  const { error } = await client.from<Addresses>('LightningAddresses').update({
-    ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as { proxyTarget: string }),
-    address: newAddress.value.split('@')[0].toLowerCase()
-  }).match({ user_id: user.value.id });
-  if (error) {
-    const { error: err } = await client.from<Addresses>('LightningAddresses').insert({
-      user_id: user.value.id,
-      ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as { proxyTarget: string }),
-      address: newAddress.value.split('@')[0].toLowerCase()
-    });
-    throw new Error(JSON.stringify(error) + '\n\n' + JSON.stringify(err));
-  }
-  newAddress.value = newAddress.value.split('@')[0] + '@sats4.me';
-  const encoder = new TextEncoder();
-  const words = bech32.toWords(encoder.encode(`https://sats4.me/.well-known/lnurl/${newAddress.value.split('@')[0]}`));
-  userLnurl.value = bech32.encode('lnurl', words, 512);
-  userTippingPage.value = `https://sats4.me/${newAddress.value.split('@')[0]}`;
-  loading.value = false;
 }
 </script>

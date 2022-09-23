@@ -10,15 +10,15 @@
         block
         label="Discord"
         variant="black"
-        @click="auth.signIn({ provider: 'discord' })"
+        @click="login('discord')"
       />
       <UButton
         class="mt-3"
         icon="mdi:github"
         block
-        label="Github"
+        label="GitHub"
         variant="black"
-        @click="auth.signIn({ provider: 'github' })"
+        @click="login('github')"
       />
       <UButton
         class="mt-3"
@@ -26,7 +26,7 @@
         block
         label="GitLab"
         variant="black"
-        @click="auth.signIn({ provider: 'gitlab' })"
+        @click="login('gitlab')"
       />
       <UButton
         class="mt-3"
@@ -34,7 +34,7 @@
         block
         label="Twitter"
         variant="black"
-        @click="auth.signIn({ provider: 'twitter' })"
+        @click="login('twitter')"
       />
       <!--<UButton
         class="mt-3"
@@ -57,6 +57,7 @@
 </template>
 
 <script setup lang="ts">
+import { Provider } from '@supabase/supabase-js';
 import { requestProvider } from 'webln';
 
 const user = useSupabaseUser();
@@ -67,6 +68,18 @@ watchEffect(() => {
     navigateTo('/addresses');
   }
 });
+
+const location = ref("account.runcitadel.space");
+
+onMounted(() => {
+  location.value = window.location.origin;
+});
+
+async function login(provider: Provider) {
+  auth.signIn({ provider: provider }, {
+    redirectTo: location.value
+  });
+}
 
 async function webLnLogin () {
   if (!process.client) { return; }

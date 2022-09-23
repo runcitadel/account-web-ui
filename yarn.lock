@@ -7468,6 +7468,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"qrcode.vue@npm:^3.3.3":
+  version: 3.3.3
+  resolution: "qrcode.vue@npm:3.3.3"
+  peerDependencies:
+    vue: ^3.0.0
+  checksum: 6f1fb0fbdfac972115b6d48937b42fbe6dff41297be77fcc461f1287e21e1d76a1d695eb50230cca1929619ab75423a4bbace73a6d05ef1f5c45d0966d2170c1
+  languageName: node
+  linkType: hard
+
 "queue-microtask@npm:^1.2.2":
   version: 1.2.3
   resolution: "queue-microtask@npm:1.2.3"
@@ -7842,6 +7851,7 @@ __metadata:
     eslint: ^8.23.1
     filenamify: ^5.1.1
     nuxt: 3.0.0-rc.11
+    qrcode.vue: ^3.3.3
     typescript: ^4.8.3
     webln: ^0.3.0
   languageName: unknown

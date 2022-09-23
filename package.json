@@ -25,6 +25,7 @@
     "backblaze-b2": "^1.7.0",
     "bech32": "^2.0.0",
     "filenamify": "^5.1.1",
+    "qrcode.vue": "^3.3.3",
     "webln": "^0.3.0"
   }
 }
