@@ -71,14 +71,12 @@
 </template>
 
 <script setup lang="ts">
+import { SupabaseClient } from "@supabase/supabase-js";
 import { bech32 } from "bech32";
 import Qrcode from "qrcode.vue";
+import { Database } from "~~/types/db";
 
-definePageMeta({
-  middleware: "auth",
-});
-
-const client = useSupabaseClient();
+const client = useSupabaseClient() as SupabaseClient<Database>;
 const user = useSupabaseUser();
 const loading = ref(null);
 const newAddress = ref("");

@@ -69,7 +69,7 @@ watchEffect(() => {
   }
 });
 
-const location = ref("account.runcitadel.space");
+const location = ref("https://account.runcitadel.space");
 
 onMounted(() => {
   location.value = window.location.origin;
@@ -79,7 +79,7 @@ async function login(provider: Provider) {
   auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: location.value,
+      redirectTo: location.value + "/confirm",
     },
   });
 }
