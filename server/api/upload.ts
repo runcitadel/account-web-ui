@@ -8,6 +8,8 @@ const backblaze = new Backblaze({
   applicationKey: process.env.BACKBLAZE_APP_KEY
 });
 
+let lastAuth: Date | null = null;
+
 export default defineEventHandler(async (event) => {
   if (event.req.method !== 'POST' && event.req.method !== 'PUT') {
     event.res.statusCode = 405;
@@ -16,7 +18,13 @@ export default defineEventHandler(async (event) => {
   }
 
   const supabase = serverSupabaseServiceRole(event);
-  await backblaze.authorize();
+  
+  // If last auth was more than 24 hours ago, re-authenticate
+  if (!lastAuth || (new Date().getTime() - lastAuth.getTime()) > 1000 * 60 * 60 * 24) {
+    console.log("Re-authenticating with Backblaze");
+    await backblaze.authorize();
+    lastAuth = new Date();
+  }
   const body: {
     name?: string;
     data?: string;
