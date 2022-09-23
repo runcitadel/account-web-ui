@@ -1,6 +1,4 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-
-const supabase = new SupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_ADMIN_KEY);
+import { serverSupabaseServiceRole } from '#supabase/server'
 
 export default defineEventHandler(async (event) => {
   if (event.req.method !== 'POST') {
@@ -8,6 +6,7 @@ export default defineEventHandler(async (event) => {
     event.res.setHeader('Allow', 'POST');
     return {};
   }
+  const supabase = serverSupabaseServiceRole(event);
   const body: {
     name?: string;
   } = await useBody(event);

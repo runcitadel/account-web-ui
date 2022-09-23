@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { SupabaseClient } from '@supabase/supabase-js';
+import { serverSupabaseServiceRole } from '#supabase/server'
 import Backblaze from 'backblaze-b2';
 import filenamify from 'filenamify';
 
@@ -8,14 +8,14 @@ const backblaze = new Backblaze({
   applicationKey: process.env.BACKBLAZE_APP_KEY
 });
 
-const supabase = new SupabaseClient(process.env.SUPABASE_URL, process.env.SUPABASE_ADMIN_KEY);
-
 export default defineEventHandler(async (event) => {
   if (event.req.method !== 'POST' && event.req.method !== 'PUT') {
     event.res.statusCode = 405;
     event.res.setHeader('Allow', 'POST, PUT');
     return {};
   }
+
+  const supabase = serverSupabaseServiceRole(event);
   await backblaze.authorize();
   const body: {
     name?: string;

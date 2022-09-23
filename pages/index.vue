@@ -57,15 +57,15 @@
 </template>
 
 <script setup lang="ts">
-import { Provider } from '@supabase/supabase-js';
-import { requestProvider } from 'webln';
+import type { Provider } from "@supabase/supabase-js";
+import { requestProvider } from "webln";
 
 const user = useSupabaseUser();
 const { auth } = useSupabaseClient();
 
 watchEffect(() => {
   if (user.value) {
-    navigateTo('/addresses');
+    navigateTo("/addresses");
   }
 });
 
@@ -76,32 +76,40 @@ onMounted(() => {
 });
 
 async function login(provider: Provider) {
-  auth.signIn({ provider: provider }, {
-    redirectTo: location.value
+  auth.signInWithOAuth({
+    provider,
+    options: {
+      redirectTo: location.value,
+    },
   });
 }
 
-async function webLnLogin () {
-  if (!process.client) { return; }
+async function webLnLogin() {
+  if (!process.client) {
+    return;
+  }
   try {
     const webln = await requestProvider();
     await webln.enable();
     // Get message to sign from supabase-ln.runcitadel.space
-    const data = await fetch('https://supabase-ln.runcitadel.space/message');
+    const data = await fetch("https://supabase-ln.runcitadel.space/message");
     const signed = await webln.signMessage((await data.json()).msg);
-    const finalData = await fetch('https://supabase-ln.runcitadel.space/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        signature: signed.signature
-      })
-    });
+    const finalData = await fetch(
+      "https://supabase-ln.runcitadel.space/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          signature: signed.signature,
+        }),
+      }
+    );
     const finalResult = await finalData.json();
     window.location.href = finalResult.link;
   } catch (error) {
-    alert('Login failed!');
+    alert("Login failed!");
     throw error;
   }
 }

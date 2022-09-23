@@ -72,7 +72,6 @@
 
 <script setup lang="ts">
 import { bech32 } from "bech32";
-import { Addresses } from "../types/addresses";
 import Qrcode from "qrcode.vue";
 
 definePageMeta({
@@ -88,33 +87,22 @@ const userLnurl = ref("");
 const userTippingPage = ref("");
 const showModal = ref(false);
 
-watch(newAddress, () => {
-  const encoder = new TextEncoder();
-  const words = bech32.toWords(
-    encoder.encode(
-      `https://sats4.me/.well-known/lnurl/${newAddress.value.split("@")[0]}`
-    )
-  );
-  userLnurl.value = bech32.encode("lnurl", words, 512);
-  userTippingPage.value = `https://sats4.me/${newAddress.value.split("@")[0]}`;
-});
-
-const { data: addressData } = await useAsyncData("addressData", async () => {
+onMounted(async () => {
   // eslint-disable-next-line prefer-const
   let { data, error } = await client
-    .from<Addresses>("LightningAddresses")
+    .from("LightningAddresses")
     .select("address, proxyTarget")
     .eq("user_id", user.value.id);
 
   if (!data || !data[0] || !data[0].proxyTarget || error) {
-    await client.from<Addresses>("LightningAddresses").insert({
+    await client.from("LightningAddresses").insert({
       user_id: user.value.id,
       proxyTarget: "",
       address: "",
     });
     data = (
       await client
-        .from<Addresses>("LightningAddresses")
+        .from("LightningAddresses")
         .select("address, proxyTarget")
         .eq("user_id", user.value.id)
     ).data;
@@ -129,7 +117,6 @@ const { data: addressData } = await useAsyncData("addressData", async () => {
   );
   userLnurl.value = bech32.encode("lnurl", words, 512);
   userTippingPage.value = `https://sats4.me/${newAddress.value.split("@")[0]}`;
-  return data;
 });
 
 async function saveData() {
@@ -137,7 +124,7 @@ async function saveData() {
 
   try {
     const { data } = await client
-      .from<Addresses>("LightningAddresses")
+      .from("LightningAddresses")
       .select("address, user_id")
       .eq("address", newAddress.value.split("@")[0].toLowerCase());
 
@@ -150,7 +137,7 @@ async function saveData() {
     const newOnionArrayUrl = newUrl.value ? newUrl.value.split("@") : [false];
     const newOnionUrl = newOnionArrayUrl[newOnionArrayUrl.length - 1];
     const { error } = await client
-      .from<Addresses>("LightningAddresses")
+      .from("LightningAddresses")
       .update({
         ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as {
           proxyTarget: string;
@@ -159,15 +146,13 @@ async function saveData() {
       })
       .match({ user_id: user.value.id });
     if (error) {
-      const { error: err } = await client
-        .from<Addresses>("LightningAddresses")
-        .insert({
-          user_id: user.value.id,
-          ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as {
-            proxyTarget: string;
-          }),
-          address: newAddress.value.split("@")[0].toLowerCase(),
-        });
+      const { error: err } = await client.from("LightningAddresses").insert({
+        user_id: user.value.id,
+        ...((newOnionUrl ? { proxyTarget: newOnionUrl } : {}) as {
+          proxyTarget: string;
+        }),
+        address: newAddress.value.split("@")[0].toLowerCase(),
+      });
       throw new Error(JSON.stringify(error) + "\n\n" + JSON.stringify(err));
     }
     newAddress.value = newAddress.value.split("@")[0] + "@sats4.me";
