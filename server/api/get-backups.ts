@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   // We keep track of the backups in Supabase and store the actual backups in Backblaze
-  const { data, error } = await supabase.from('Backups').select('backup_id').eq('key', body.name).order('created_at', { ascending: false }).limit(1).single();
+  const { data, error } = await supabase.from('Backups').select().eq('key', body.name).order('created_at', { ascending: false }).limit(100);
   if (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  if (!data) {
+  if (!data[0]) {
     event.res.statusCode = 404;
     return {
       error: 'Not found'
@@ -38,6 +38,6 @@ export default defineEventHandler(async (event) => {
   }
 
   return {
-    data: data.backup_id
+    data
   };
 });
