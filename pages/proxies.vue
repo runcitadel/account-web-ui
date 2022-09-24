@@ -57,9 +57,12 @@ onMounted(async () => {
     .from("reverse_proxies")
     .select()
     .eq("owner", user.value.id)
-    .maybeSingle();
+    .single();
 
-  if (!error && data) newUrl.value = data.target_url;
+  if (!error && data) {
+    newUrl.value = data.target_url;
+    btcpayCompat.value = data.btcpay_compat;
+  }
 });
 
 async function saveData() {
