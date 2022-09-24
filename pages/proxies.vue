@@ -2,10 +2,9 @@
   <div class="w-full my-[50px]">
     <h1 class="mb-12 text-6xl font-bold u-text-white">Proxies</h1>
     <span class="u-text-white mb-2">
-      Make any onion site available on the "normal" internet. This service is
-      still in beta and will not stay free (Lightning addresses will stay free),
-      but you can try it for free (with limitations) currently. The final
-      version will be faster and support custom domains.
+      Make any onion site available on the "normal" internet.
+      This part of the service is still in beta currently and will not stay free.
+      The final version will be faster and support custom domains.
     </span>
     <form class="gap-2 my-2" @submit.prevent="saveData">
       <div class="mb-4">
